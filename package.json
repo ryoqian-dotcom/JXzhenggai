@@ -1,0 +1,12 @@
+{
+  "name": "jingxian-river-app",
+  "version": "1.0.0",
+  "description": "上海净贤市政工程有限公司 - 河道整改通知单生成器 PWA",
+  "scripts": {
+    "start": "node server.js",
+    "icons": "node generate-icons.js"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}
