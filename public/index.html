@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="净贤河道">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>上海净贤市政工程有限公司 · 河道整改通知单生成器</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter','Noto Serif SC',sans-serif;background:#0a1628;color:#e2e8f0;position:relative}
+
+/* Animated water background */
+.bg-water{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.bg-water::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,#0a1628 0%,#0d2137 30%,#143352 60%,#1a4a6e 80%,#1e5a82 100%)}
+.wave{position:absolute;bottom:0;left:0;width:200%;height:200px;opacity:.15}
+.wave svg{width:100%;height:100%}
+.wave-1{animation:wave 8s linear infinite}
+.wave-2{animation:wave 12s linear infinite reverse;bottom:20px;opacity:.1}
+.wave-3{animation:wave 15s linear infinite;bottom:40px;opacity:.06}
+@keyframes wave{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Floating particles */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.particle{position:absolute;border-radius:50%;background:rgba(212,175,55,.3);animation:float linear infinite}
+@keyframes float{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
+
+/* Main content */
+.main-container{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:20px}
+
+/* Logo area */
+.logo-section{text-align:center;animation:fadeInUp .8s ease-out}
+.logo-ring{width:130px;height:130px;border-radius:50%;padding:4px;background:linear-gradient(135deg,#d4af37 0%,#1e5a82 50%,#d4af37 100%);margin:0 auto 20px;animation:logoGlow 3s ease-in-out infinite;box-shadow:0 0 40px rgba(212,175,55,.2)}
+.logo-inner{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
+.logo-inner img{width:100%;height:100%;object-fit:contain}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 30px rgba(212,175,55,.2)}50%{box-shadow:0 0 50px rgba(212,175,55,.4),0 0 80px rgba(30,90,130,.2)}}
+
+.company-name{font-family:'Noto Serif SC',serif;font-size:26px;font-weight:900;background:linear-gradient(135deg,#d4af37 0%,#f4e48c 50%,#d4af37 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px;margin-bottom:8px;text-shadow:none}
+.company-sub{font-size:13px;color:#64748b;letter-spacing:6px;text-transform:uppercase}
+
+/* Divider */
+.divider{width:180px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent);margin:0 auto}
+
+/* App title */
+.app-title{text-align:center;animation:fadeInUp .8s ease-out .2s both}
+.app-title h2{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:#e2e8f0;margin-bottom:6px;letter-spacing:2px}
+.app-title p{font-size:13px;color:#64748b;line-height:1.6}
+
+/* Action button */
+.action-section{animation:fadeInUp .8s ease-out .4s both;width:100%;max-width:360px}
+.btn-generate{width:100%;padding:18px 40px;border:none;border-radius:16px;font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;letter-spacing:4px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s ease;color:#0f172a;background:linear-gradient(135deg,#d4af37 0%,#f4d03f 50%,#d4af37 100%);box-shadow:0 8px 32px rgba(212,175,55,.3)}
+.btn-generate:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(212,175,55,.45)}
+.btn-generate:active{transform:translateY(0);box-shadow:0 4px 20px rgba(212,175,55,.3)}
+.btn-generate .btn-icon{display:inline-flex;align-items:center;gap:10px}
+.btn-generate::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);animation:btnShine 4s linear infinite}
+@keyframes btnShine{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(100%) rotate(45deg)}}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:20px;justify-content:center;animation:fadeInUp .8s ease-out .6s both}
+.stat-item{text-align:center;padding:12px 20px;background:rgba(255,255,255,.03);border:1px solid rgba(212,175,55,.12);border-radius:12px;min-width:90px}
+.stat-num{font-size:22px;font-weight:700;color:#d4af37;font-family:'Inter',sans-serif}
+.stat-label{font-size:11px;color:#64748b;margin-top:4px}
+
+/* Footer */
+.footer{position:absolute;bottom:20px;text-align:center;font-size:11px;color:#374151;z-index:10;width:100%}
+.footer a{color:#d4af37;text-decoration:none}
+
+/* Ripple */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:ripple .6s linear}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* Water icon decorations */
+.water-deco{position:absolute;opacity:.06;z-index:1}
+.water-deco-1{top:8%;right:8%;font-size:80px}
+.water-deco-2{bottom:15%;left:5%;font-size:60px}
+
+/* Mobile adjustments */
+@media(max-width:480px){
+  .company-name{font-size:20px;letter-spacing:2px}
+  .logo-ring{width:100px;height:100px}
+  .btn-generate{padding:16px 30px;font-size:16px}
+  .stats-bar{gap:12px}
+  .stat-item{padding:10px 14px;min-width:75px}
+  .stat-num{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<!-- Animated water background -->
+<div class="bg-water">
+  <div class="wave wave-1">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,100 C240,180 480,20 720,100 C960,180 1200,20 1440,100 C1680,180 1920,20 2160,100 C2400,180 2640,20 2880,100 L2880,200 L0,200 Z" fill="rgba(30,90,130,.6)"/>
+    </svg>
+  </div>
+  <div class="wave wave-2">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,120 C360,40 720,180 1080,100 C1440,20 1800,160 2160,80 C2520,0 2880,140 2880,140 L2880,200 L0,200 Z" fill="rgba(26,74,110,.5)"/>
+    </svg>
+  </div>
+  <div class="wave wave-3">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,80 C480,160 960,40 1440,120 C1920,200 2400,80 2880,160 L2880,200 L0,200 Z" fill="rgba(20,51,82,.4)"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Water decoration icons -->
+<div class="water-deco water-deco-1">
+  <svg fill="currentColor" viewBox="0 0 24 24" width="80" height="80" style="color:rgba(212,175,55,.3)">
+    <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/>
+  </svg>
+</div>
+<div class="water-deco water-deco-2">
+  <svg fill="currentColor" viewBox="0 0 24 24" width="60" height="60" style="color:rgba(30,90,130,.4)">
+    <path d="M17.66 8L12 2.35 6.34 8A8.02 8.02 0 004 13.64c0 2 .78 4.11 2.34 5.67a7.99 7.99 0 0011.32 0c1.56-1.56 2.34-3.67 2.34-5.67S19.22 9.56 17.66 8z"/>
+  </svg>
+</div>
+
+<!-- Main Content -->
+<div class="main-container">
+  <div class="logo-section">
+    <div class="logo-ring">
+      <div class="logo-inner">
+        <img src="images/logo.jpg" alt="上海净贤市政工程有限公司">
+      </div>
+    </div>
+    <h1 class="company-name">上海净贤市政工程有限公司</h1>
+    <p class="company-sub">Shanghai Jingxian Municipal</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="app-title">
+    <h2>河道整改通知单生成器</h2>
+    <p>河道保洁养护 · 智慧管理平台</p>
+  </div>
+
+  <div class="action-section">
+    <button class="btn-generate" id="generateBtn" onclick="openForm()">
+      <span class="btn-icon">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        生成整改单
+      </span>
+    </button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-label">累计生成</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-month">0</div>
+      <div class="stat-label">本月整改</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="stat-rate">100%</div>
+      <div class="stat-label">整改率</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>&copy; 2026 上海净贤市政工程有限公司 · 河道保洁养护智慧管理系统</p>
+</div>
+
+<script>
+// Generate floating particles
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    container.appendChild(p);
+  }
+}
+
+// Ripple effect on button
+document.getElementById('generateBtn').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  this.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
+// Open form page
+function openForm() {
+  // Update stats
+  let total = parseInt(localStorage.getItem('jx_total') || '0');
+  total++;
+  localStorage.setItem('jx_total', total.toString());
+
+  let monthKey = 'jx_month_' + new Date().toISOString().slice(0, 7);
+  let monthCount = parseInt(localStorage.getItem(monthKey) || '0');
+  monthCount++;
+  localStorage.setItem(monthKey, monthCount.toString());
+
+  updateStats();
+
+  // Navigate to form
+  setTimeout(() => {
+    window.location.href = 'form.html';
+  }, 300);
+}
+
+// Update statistics display
+function updateStats() {
+  const total = parseInt(localStorage.getItem('jx_total') || '0');
+  const monthKey = 'jx_month_' + new Date().toISOString().slice(0, 7);
+  const month = parseInt(localStorage.getItem(monthKey) || '0');
+
+  animateNumber('stat-total', total);
+  animateNumber('stat-month', month);
+}
+
+function animateNumber(id, target) {
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent) || 0;
+  const duration = 600;
+  const startTime = Date.now();
+
+  function update() {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * eased);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  update();
+}
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// Init
+createParticles();
+updateStats();
+</script>
+</body>
+</html>
