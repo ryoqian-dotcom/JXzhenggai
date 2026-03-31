@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海净贤市政工程有限公司 · 智慧河道管理系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/docx@8.2.3/build/index.umd.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Noto Serif SC',sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%);min-height:100vh;color:#e2e8f0}
+.nav{background:linear-gradient(180deg,rgba(15,23,42,.98) 0%,rgba(30,58,95,.95) 100%);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,.25);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(212,175,55,.15);border-radius:12px;backdrop-filter:blur(10px);transition:all .3s ease}
+.card:hover{border-color:rgba(212,175,55,.3);box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.section-title{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:600;color:#d4af37;border-left:3px solid #d4af37;padding-left:12px;margin-bottom:20px}
+.input-field{width:100%;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.2);border-radius:8px;padding:12px 16px;color:#e2e8f0;font-size:14px;transition:all .2s ease}
+.input-field:focus{outline:none;border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.1)}
+.btn-primary{background:linear-gradient(135deg,#d4af37 0%,#f4d03f 100%);color:#0f172a;font-weight:600;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;transition:all .2s ease;font-size:14px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,175,55,.35)}
+.btn-secondary{background:transparent;border:1px solid rgba(212,175,55,.4);color:#d4af37;padding:10px 20px;border-radius:8px;cursor:pointer;transition:all .2s ease;font-size:14px}
+.btn-secondary:hover{background:rgba(212,175,55,.1);border-color:#d4af37}
+.btn-quick{background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.2);color:#94a3b8;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .2s ease;font-size:12px}
+.btn-quick:hover{border-color:#d4af37;color:#d4af37}
+.deadline-box{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);border-radius:8px;padding:16px;margin-top:16px}
+.a4{width:210mm;min-height:297mm;padding:25mm;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.4);color:#1e293b;margin:0 auto}
+.form-table{width:100%;border-collapse:collapse;margin-top:16px}
+.form-table td{border:1px solid #cbd5e1;padding:12px 16px;font-size:13px;font-family:'Noto Serif SC',serif;vertical-align:middle;color:#334155}
+.form-table .label{background:#f1f5f9;font-weight:600;text-align:center;width:13%;color:#0f172a;font-size:13px}
+.form-table .content{background:#fff;color:#334155}
+.photo-cell{height:160px;text-align:center;vertical-align:middle;background:#f8fafc!important}
+.status-tag{display:inline-block;padding:4px 14px;border-radius:4px;font-size:12px;font-weight:500}
+.status-wait{background:#fef3c7;color:#92400e}
+.status-process{background:#dbeafe;color:#1e40af}
+.status-done{background:#d1fae5;color:#065f46}
+.upload-box{width:72px;height:72px;border:2px dashed rgba(148,163,184,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease}
+.upload-box:hover{border-color:#d4af37;background:rgba(212,175,55,.05)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:#d4af37;text-decoration:none;font-size:14px;padding:6px 12px;border-radius:6px;transition:all .2s ease}
+.back-btn:hover{background:rgba(212,175,55,.1)}
+@media(max-width:1024px){.a4{width:100%;min-height:auto;padding:15px;font-size:12px}.form-table td{padding:8px 10px;font-size:11px}}
+@media print{body{background:#fff}.no-print{display:none!important}.a4{box-shadow:none;width:100%;padding:20mm;margin:0}}
+</style>
+</head>
+<body>
+<nav class="nav no-print sticky top-0 z-50">
+<div class="w-full px-4 md:px-6 py-4 flex flex-wrap justify-between items-center gap-3">
+<div class="flex items-center gap-4">
+<a href="index.html" class="back-btn">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+返回
+</a>
+<div class="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden bg-white">
+<img src="images/logo.jpg" alt="Logo" class="w-10 h-10 object-contain">
+</div>
+<div>
+<h1 class="text-base md:text-lg font-semibold" style="color:#d4af37;font-family:'Noto Serif SC',serif">上海净贤市政工程有限公司</h1>
+<p class="text-xs" style="color:#64748b">智慧河道管理系统</p>
+</div>
+</div>
+<div class="flex items-center gap-2 md:gap-4 flex-wrap">
+<div class="text-right">
+<p class="text-xs" style="color:#64748b">编号</p>
+<p id="nav-no" class="text-sm md:text-base font-mono font-semibold" style="color:#d4af37">JXSZ-MXXXXXX-20260323-001</p>
+</div>
+<button onclick="fillDemo()" class="btn-secondary text-sm px-3 md:px-4 py-2">填充示例</button>
+<button onclick="exportWord()" class="btn-primary text-sm px-4 md:px-5 py-2">导出Word</button>
+</div>
+</div>
+</nav>
+
+<div class="w-full px-4 md:px-6 py-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div class="lg:col-span-5 space-y-5">
+<div class="card p-5">
+<div class="section-title">基本信息</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">河道名称 <span style="color:#d4af37">*</span></label>
+<input type="text" id="river-name" class="input-field" placeholder="请输入河道名称" oninput="updatePreview()">
+</div>
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">事件位置</label>
+<input type="text" id="location" class="input-field" placeholder="具体位置" oninput="updatePreview()">
+</div>
+</div>
+</div>
+
+<div class="card p-5">
+<div class="section-title">事件信息</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">事件类型</label>
+<select id="event-type" class="input-field cursor-pointer" onchange="updatePreview()">
+<option value="">请选择事件类型</option>
+<optgroup label="水面保洁类">
+<option value="水面漂浮垃圾">水面漂浮垃圾</option>
+<option value="水生植物泛滥">水生植物泛滥</option>
+<option value="油污污染">油污污染</option>
+<option value="漂浮死鱼">漂浮死鱼</option>
+<option value="其他漂浮物">其他漂浮物</option>
+</optgroup>
+<optgroup label="岸坡保洁类">
+<option value="岸坡垃圾堆积">岸坡垃圾堆积</option>
+<option value="岸坡杂草丛生">岸坡杂草丛生</option>
+<option value="岸坡种菜">岸坡种菜</option>
+<option value="岸坡堆物">岸坡堆物</option>
+<option value="岸坡违章搭建">岸坡违章搭建</option>
+</optgroup>
+<optgroup label="设施维护类">
+<option value="护栏破损">护栏破损</option>
+<option value="护岸破损">护岸破损</option>
+<option value="防汛墙破损">防汛墙破损</option>
+<option value="排水口堵塞">排水口堵塞</option>
+<option value="闸门设施故障">闸门设施故障</option>
+<option value="标识标牌缺失/破损">标识标牌缺失/破损</option>
+<option value="救生设施缺失">救生设施缺失</option>
+</optgroup>
+<optgroup label="水质环境类">
+<option value="水体黑臭">水体黑臭</option>
+<option value="水体富营养化">水体富营养化</option>
+<option value="污水直排">污水直排</option>
+<option value="水体颜色异常">水体颜色异常</option>
+<option value="水体异味">水体异味</option>
+</optgroup>
+<optgroup label="绿化养护类">
+<option value="绿化缺失">绿化缺失</option>
+<option value="绿化枯死">绿化枯死</option>
+<option value="绿化病虫害">绿化病虫害</option>
+<option value="绿化修剪不当">绿化修剪不当</option>
+<option value="侵占绿化">侵占绿化</option>
+</optgroup>
+<optgroup label="其他问题">
+<option value="非法捕捞">非法捕捞</option>
+<option value="非法设障">非法设障</option>
+<option value="非法排污">非法排污</option>
+<option value="其他">其他</option>
+</optgroup>
+</select>
+</div>
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">事件描述</label>
+<textarea id="event-desc" rows="3" class="input-field resize-none" placeholder="请详细描述事件情况..." oninput="updatePreview()"></textarea>
+</div>
+<div>
+<label class="block text-sm mb-3" style="color:#94a3b8">事件状态</label>
+<div class="flex gap-3">
+<label class="flex items-center gap-2 cursor-pointer">
+<input type="radio" name="status" value="待处理" checked onchange="updatePreview()"> <span class="text-sm" style="color:#cbd5e1">待处理</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input type="radio" name="status" value="处理中" onchange="updatePreview()"> <span class="text-sm" style="color:#cbd5e1">处理中</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input type="radio" name="status" value="已处理" onchange="updatePreview()"> <span class="text-sm" style="color:#cbd5e1">已处理</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card p-5">
+<div class="section-title">图片资料</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">事件照片</label>
+<div id="photo-container" class="flex flex-wrap gap-2">
+<div class="upload-box" onclick="document.getElementById('event-photo').click()">
+<svg class="w-5 h-5" style="color:#64748b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+</div>
+</div>
+<input type="file" id="event-photo" accept="image/*" multiple class="hidden" onchange="handlePhotoUpload(event,'photo-container','p-photos')">
+</div>
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">定位地图</label>
+<div id="map-container" class="flex flex-wrap gap-2">
+<div class="upload-box" onclick="document.getElementById('map-photo').click()">
+<svg class="w-5 h-5" style="color:#64748b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+</div>
+</div>
+<input type="file" id="map-photo" accept="image/*" class="hidden" onchange="handlePhotoUpload(event,'map-container','p-map')">
+</div>
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">处理后照片</label>
+<div id="after-container" class="flex flex-wrap gap-2">
+<div class="upload-box" onclick="document.getElementById('after-photo').click()">
+<svg class="w-5 h-5" style="color:#64748b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+</div>
+</div>
+<input type="file" id="after-photo" accept="image/*" multiple class="hidden" onchange="handlePhotoUpload(event,'after-container','p-after')">
+</div>
+</div>
+</div>
+
+<div class="card p-5">
+<div class="section-title">上报信息</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">上报人</label>
+<input type="text" id="reporter" class="input-field" placeholder="上报人姓名" oninput="updatePreview()">
+</div>
+<div>
+<label class="block text-sm mb-2" style="color:#94a3b8">上报时间</label>
+<div class="flex gap-2 mb-3">
+<button onclick="setQuickDate(0)" class="btn-quick">今天</button>
+<button onclick="setQuickDate(-1)" class="btn-quick">昨天</button>
+<button onclick="setQuickDate(-2)" class="btn-quick">前天</button>
+<button onclick="setQuickDate(-7)" class="btn-quick">一周前</button>
+</div>
+<input type="date" id="report-date" class="input-field" onchange="updatePreview()">
+</div>
+<div id="deadline-info" class="deadline-box hidden">
+<div class="flex items-center gap-2 mb-1">
+<svg class="w-4 h-4" style="color:#d4af37" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<span class="text-sm font-medium" style="color:#d4af37">整改期限</span>
+</div>
+<p id="deadline-text" class="text-sm" style="color:#94a3b8"></p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="lg:col-span-7">
+<div class="sticky top-24">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-base font-semibold" style="color:#d4af37;font-family:'Noto Serif SC',serif">文档预览</h2>
+<button onclick="window.print()" class="btn-secondary text-xs px-3 py-1.5">打印</button>
+</div>
+<div id="preview" class="a4" style="overflow:auto">
+<div class="text-center mb-6">
+<img src="images/logo.jpg" alt="Logo" style="width:60px;height:60px;object-fit:contain;margin:0 auto 10px auto;display:block">
+<h1 style="font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:#0f172a;margin-bottom:4px">上海净贤市政工程有限公司</h1>
+<h2 style="font-family:'Noto Serif SC',serif;font-size:17px;font-weight:600;color:#1e3a5f;margin-bottom:6px">河道保洁养护整改通知单</h2>
+<div style="width:60px;height:2px;background:linear-gradient(90deg,#d4af37,#1e3a5f);margin:0 auto 10px auto;border-radius:1px"></div>
+<p id="p-no" style="font-size:12px;color:#64748b;font-family:monospace">编号：JXSZ-MXXXXXX-20260323-001</p>
+</div>
+
+<table class="form-table">
+<tr>
+<td class="label" rowspan="2">基本<br>信息</td>
+<td class="label">河道名称</td>
+<td class="content" colspan="3" id="p-river">-</td>
+<td class="label">事件编号</td>
+<td class="content" id="p-id">JXSZ-MXXXXXX-20260323-001</td>
+</tr>
+<tr>
+<td class="label">事件位置</td>
+<td class="content" colspan="5" id="p-location">-</td>
+</tr>
+<tr>
+<td class="label" rowspan="3">事件<br>信息</td>
+<td class="label">事件类型</td>
+<td class="content" colspan="2" id="p-type">-</td>
+<td class="label">事件状态</td>
+<td class="content" colspan="2" id="p-status"><span class="status-tag status-wait">待处理</span></td>
+</tr>
+<tr>
+<td class="label">上报人</td>
+<td class="content" id="p-reporter">-</td>
+<td class="label">上报时间</td>
+<td class="content" colspan="2" id="p-date">-</td>
+</tr>
+<tr>
+<td class="label" colspan="2">事件描述</td>
+<td class="content" colspan="4" id="p-desc" style="min-height:80px;line-height:1.8">-</td>
+</tr>
+<tr>
+<td class="label" rowspan="2">现场<br>记录</td>
+<td class="label" colspan="2">事件照片</td>
+<td class="photo-cell" colspan="4" id="p-photos">
+<span style="color:#94a3b8;font-size:12px">暂无照片</span>
+</td>
+</tr>
+<tr>
+<td class="label" colspan="2">定位地图</td>
+<td class="photo-cell" colspan="4" id="p-map">
+<span style="color:#94a3b8;font-size:12px">暂无地图</span>
+</td>
+</tr>
+<tr>
+<td class="label">整改<br>要求</td>
+<td class="label" colspan="2">整改期限</td>
+<td class="content" colspan="4" id="p-deadline" style="color:#b45309;font-weight:600">
+请选择上报时间以自动计算整改期限
+</td>
+</tr>
+<tr>
+<td class="label">处理<br>结果</td>
+<td class="label" colspan="2">处理后照片</td>
+<td class="photo-cell" colspan="4" id="p-after">
+<span style="color:#94a3b8;font-size:12px">暂无照片</span>
+</td>
+</tr>
+</table>
+
+<div style="margin-top:30px;display:flex;justify-content:space-between;font-size:12px;color:#64748b;font-family:'Noto Serif SC',serif">
+<div>
+<p>签发人：_________________</p>
+<p style="margin-top:8px">日期：_________________</p>
+</div>
+<div style="text-align:right">
+<p>接收人：_________________</p>
+<p style="margin-top:8px">日期：_________________</p>
+</div>
+</div>
+<div style="margin-top:20px;text-align:center;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:10px">
+上海净贤市政工程有限公司 · 河道保洁养护整改通知单 · 本文件由智慧河道管理系统自动生成
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const photoStore = { 'p-photos': [], 'p-map': [], 'p-after': [] };
+
+function generateNo() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const seq = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+  return `JXSZ-M${m}${d}${seq}-${y}${m}${d}-${seq}`;
+}
+
+function setQuickDate(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  const val = d.toISOString().split('T')[0];
+  document.getElementById('report-date').value = val;
+  updatePreview();
+}
+
+function getStatus() {
+  const radios = document.getElementsByName('status');
+  for (const r of radios) { if (r.checked) return r.value; }
+  return '待处理';
+}
+
+function updatePreview() {
+  const river = document.getElementById('river-name').value || '-';
+  const loc = document.getElementById('location').value || '-';
+  const type = document.getElementById('event-type').value || '-';
+  const desc = document.getElementById('event-desc').value || '-';
+  const reporter = document.getElementById('reporter').value || '-';
+  const date = document.getElementById('report-date').value || '-';
+  const status = getStatus();
+
+  document.getElementById('p-river').textContent = river;
+  document.getElementById('p-location').textContent = loc;
+  document.getElementById('p-type').textContent = type;
+  document.getElementById('p-desc').textContent = desc;
+  document.getElementById('p-reporter').textContent = reporter;
+  document.getElementById('p-date').textContent = date;
+
+  const statusMap = { '待处理': 'status-wait', '处理中': 'status-process', '已处理': 'status-done' };
+  document.getElementById('p-status').innerHTML = `<span class="status-tag ${statusMap[status]}">${status}</span>`;
+
+  if (date && date !== '-') {
+    const reportDate = new Date(date);
+    const deadline = new Date(reportDate);
+    deadline.setDate(deadline.getDate() + 7);
+    const dlStr = deadline.toISOString().split('T')[0];
+    document.getElementById('p-deadline').textContent = `${date} 至 ${dlStr}（7个自然日内完成整改）`;
+    document.getElementById('deadline-info').classList.remove('hidden');
+    document.getElementById('deadline-text').textContent = `整改截止日期：${dlStr}（自上报之日起7个自然日内）`;
+  }
+
+  const no = generateNo();
+  document.getElementById('p-no').textContent = `编号：${no}`;
+  document.getElementById('p-id').textContent = no;
+  document.getElementById('nav-no').textContent = no;
+}
+
+function handlePhotoUpload(event, containerId, previewId) {
+  const files = event.target.files;
+  if (!files.length) return;
+  const container = document.getElementById(containerId);
+  const previewCell = document.getElementById(previewId);
+
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      photoStore[previewId].push(dataUrl);
+
+      // Add thumbnail to sidebar
+      const thumb = document.createElement('div');
+      thumb.style.cssText = 'width:72px;height:72px;border-radius:8px;overflow:hidden;position:relative;border:1px solid rgba(148,163,184,.2)';
+      thumb.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover">
+        <div onclick="removePhoto(this,'${previewId}')" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:12px">&times;</div>`;
+      const addBtn = container.querySelector('.upload-box');
+      container.insertBefore(thumb, addBtn);
+
+      // Update preview cell
+      updatePhotoCells(previewId);
+    };
+    reader.readAsDataURL(file);
+  }
+  event.target.value = '';
+}
+
+function removePhoto(el, previewId) {
+  const thumb = el.parentElement;
+  const container = thumb.parentElement;
+  const thumbs = Array.from(container.children).filter(c => !c.classList.contains('upload-box'));
+  const idx = thumbs.indexOf(thumb);
+  if (idx > -1) photoStore[previewId].splice(idx, 1);
+  thumb.remove();
+  updatePhotoCells(previewId);
+}
+
+function updatePhotoCells(previewId) {
+  const cell = document.getElementById(previewId);
+  if (photoStore[previewId].length === 0) {
+    cell.innerHTML = '<span style="color:#94a3b8;font-size:12px">暂无照片</span>';
+    return;
+  }
+  cell.innerHTML = photoStore[previewId].map(src =>
+    `<img src="${src}" style="height:140px;max-width:200px;object-fit:cover;border-radius:4px;margin:4px;border:1px solid #e2e8f0">`
+  ).join('');
+  cell.style.textAlign = 'left';
+}
+
+function fillDemo() {
+  document.getElementById('river-name').value = '横沥港';
+  document.getElementById('location').value = '闵行区浦江镇横沥港东岸200米处';
+  document.getElementById('event-type').value = '岸坡垃圾堆积';
+  document.getElementById('event-desc').value = '巡查发现横沥港东岸约200米处有大量生活垃圾堆积，面积约15平方米，包括塑料袋、废纸箱、厨余垃圾等，影响河道环境卫生和水质安全，需尽快清理整改。';
+  document.getElementById('reporter').value = '张伟';
+  setQuickDate(0);
+  updatePreview();
+}
+
+async function exportWord() {
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle, HeadingLevel } = docx;
+
+  const river = document.getElementById('river-name').value || '-';
+  const loc = document.getElementById('location').value || '-';
+  const type = document.getElementById('event-type').value || '-';
+  const desc = document.getElementById('event-desc').value || '-';
+  const reporter = document.getElementById('reporter').value || '-';
+  const date = document.getElementById('report-date').value || '-';
+  const status = getStatus();
+  const no = document.getElementById('nav-no').textContent;
+
+  let deadlineStr = '请选择上报时间';
+  if (date && date !== '-') {
+    const reportDate = new Date(date);
+    const deadline = new Date(reportDate);
+    deadline.setDate(deadline.getDate() + 7);
+    deadlineStr = `${date} 至 ${deadline.toISOString().split('T')[0]}（7个自然日内完成整改）`;
+  }
+
+  const borderStyle = { style: BorderStyle.SINGLE, size: 1, color: '999999' };
+  const borders = { top: borderStyle, bottom: borderStyle, left: borderStyle, right: borderStyle };
+
+  function labelCell(text, opts = {}) {
+    return new TableCell({
+      children: [new Paragraph({ children: [new TextRun({ text, bold: true, size: 22, font: '仿宋' })], alignment: AlignmentType.CENTER })],
+      shading: { fill: 'F1F5F9' },
+      verticalAlign: 'center',
+      borders,
+      ...opts
+    });
+  }
+  function contentCell(text, opts = {}) {
+    return new TableCell({
+      children: [new Paragraph({ children: [new TextRun({ text, size: 22, font: '仿宋' })], alignment: AlignmentType.LEFT })],
+      verticalAlign: 'center',
+      borders,
+      ...opts
+    });
+  }
+
+  const table = new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({ children: [
+        labelCell('基本信息', { rowSpan: 2 }),
+        labelCell('河道名称'),
+        contentCell(river, { columnSpan: 3 }),
+        labelCell('事件编号'),
+        contentCell(no),
+      ]}),
+      new TableRow({ children: [
+        labelCell('事件位置'),
+        contentCell(loc, { columnSpan: 5 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('事件信息', { rowSpan: 3 }),
+        labelCell('事件类型'),
+        contentCell(type, { columnSpan: 2 }),
+        labelCell('事件状态'),
+        contentCell(status, { columnSpan: 2 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('上报人'),
+        contentCell(reporter),
+        labelCell('上报时间'),
+        contentCell(date, { columnSpan: 2 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('事件描述', { columnSpan: 2 }),
+        contentCell(desc, { columnSpan: 4 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('现场记录', { rowSpan: 2 }),
+        labelCell('事件照片', { columnSpan: 2 }),
+        contentCell('（见附件照片）', { columnSpan: 4 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('定位地图', { columnSpan: 2 }),
+        contentCell('（见附件地图）', { columnSpan: 4 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('整改要求'),
+        labelCell('整改期限', { columnSpan: 2 }),
+        contentCell(deadlineStr, { columnSpan: 4 }),
+      ]}),
+      new TableRow({ children: [
+        labelCell('处理结果'),
+        labelCell('处理后照片', { columnSpan: 2 }),
+        contentCell('（见附件照片）', { columnSpan: 4 }),
+      ]}),
+    ],
+  });
+
+  const doc = new Document({
+    sections: [{
+      properties: { page: { margin: { top: 1440, right: 1200, bottom: 1440, left: 1200 } } },
+      children: [
+        new Paragraph({ children: [new TextRun({ text: '上海净贤市政工程有限公司', bold: true, size: 36, font: '黑体' })], alignment: AlignmentType.CENTER, spacing: { after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: '河道保洁养护整改通知单', bold: true, size: 30, font: '黑体' })], alignment: AlignmentType.CENTER, spacing: { after: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: `编号：${no}`, size: 18, font: '仿宋', color: '666666' })], alignment: AlignmentType.CENTER, spacing: { after: 300 } }),
+        table,
+        new Paragraph({ children: [], spacing: { before: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: '签发人：_________________          日期：_________________', size: 20, font: '仿宋' })], spacing: { after: 200 } }),
+        new Paragraph({ children: [new TextRun({ text: '接收人：_________________          日期：_________________', size: 20, font: '仿宋' })], spacing: { after: 400 } }),
+        new Paragraph({ children: [new TextRun({ text: '上海净贤市政工程有限公司 · 河道保洁养护整改通知单 · 本文件由智慧河道管理系统自动生成', size: 16, font: '仿宋', color: '999999' })], alignment: AlignmentType.CENTER }),
+      ],
+    }],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, `整改通知单_${river}_${date}.docx`);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  const no = generateNo();
+  document.getElementById('nav-no').textContent = no;
+  document.getElementById('p-no').textContent = `编号：${no}`;
+  document.getElementById('p-id').textContent = no;
+});
+</script>
+</body>
+</html>
